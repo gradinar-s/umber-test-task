@@ -1,32 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { generateUniqueRandomArray, getRandomNumber } from "../utils";
 import { useEffect, useState } from "react";
-import { keys } from "./queryKeys";
-
-export interface User {
-  picture: {
-    large: string;
-  };
-  login: {
-    uuid: string;
-  };
-}
-
-const getUsers = async ({ count = 10 }): Promise<User[]> => {
-  const data = await axios(
-    `https://randomuser.me/api?results=${count}&inc=picture,login`
-  );
-
-  return data.data?.results ?? [];
-};
+import { getUsers, User } from "../api/getUsers";
 
 export const useGetUsers = () => {
   const [count, setCount] = useState(10);
   const [users, setUsers] = useState<User[]>([]);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: keys.users,
+    queryKey: ["users"],
     refetchInterval: 3000,
     refetchOnWindowFocus: false,
     queryFn: () => getUsers({ count }),
